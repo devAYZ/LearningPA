@@ -7,11 +7,16 @@
 
 import SwiftUI
 
+
 @main
 struct LearningPAApp: App {
+    @State private var userData = UserData()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AppRootView()
+                .environment(userData)
         }
     }
 }
+
