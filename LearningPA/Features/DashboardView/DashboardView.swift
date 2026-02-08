@@ -12,13 +12,11 @@ struct DashboardView: View {
     // MARK: Environment
     @Environment(UserData.self) private var userData
     
-    // MARK: Mock Data (replace with real models later)
+    // MARK: Mock Data
     private let streakDays = 3
     private let todayProgress: Double = 0.6
     private let currentStage = 3
     private let totalStages = 11
-    
-    @State var navgateToAchievement: Bool = false
     
     // MARK: Body
     var body: some View {
@@ -31,16 +29,29 @@ struct DashboardView: View {
                     todayLessonSection
                 }
                 
-                VStack(spacing: 30) {
+                VStack(spacing: 40) {
                     learningPathSection
                     
                     badgesSection
                 }
             }
             .padding(.horizontal)
-            .padding(.bottom, 32)
+            .padding(.bottom, 40)
         }
         .background(Color(.systemBackground))
+    }
+    
+    var dynamicGreeting: (String, String) {
+        let hour = Calendar.current.component(.hour, from: Date())
+        switch hour {
+        case 5..<12: return ("Good morning", "Start the day with a bang! ☀️")
+        case 12..<17: return ("Good afternoon", "You’re closer than you think 💪")
+        default: return ("Good evening", "Wrap it up, it’s time to rest 🌙")
+        }
+    }
+    
+    var userName: String {
+        userData.name ?? "-"
     }
 }
 
@@ -62,9 +73,9 @@ private extension DashboardView {
                 }
                 .overlay(
                     Circle()
-                        .stroke(Color.purpleMain.opacity(0.5), lineWidth: 2)
+                        .stroke(Color.purpleMain.opacity(0.5), lineWidth: 4)
                 )
-                .navigateTo(to: ContentUnavailableView("Not available", image: "blue_badge"))
+                .navigateTo(to: ComingSoonView(pageTitle: "Profile Page"))
                 
                 Spacer()
                 
@@ -72,6 +83,10 @@ private extension DashboardView {
             }
             
             VStack(spacing: 8) {
+                Image(.helloRobot)
+                    .resizable()
+                    .frame(width: 120, height: 120)
+                
                 Text("\(dynamicGreeting.0), \(userName)!")
                     .font(.title2)
                     .fontWeight(.bold)
@@ -82,6 +97,18 @@ private extension DashboardView {
             }
             .frame(maxWidth: .infinity)
         }
+        .padding()
+        .background(
+            LinearGradient(
+                colors: [
+                    .white,
+                    .purpleMain.opacity(0.15)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 14))
     }
     
     var streakView: some View {
@@ -182,9 +209,8 @@ private extension DashboardView {
 }
 
 private extension DashboardView {
-    
     var badgesSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(spacing: 12) {
             
             HStack() {
                 Text("Badges")
@@ -198,7 +224,8 @@ private extension DashboardView {
                     .navigateTo(to: ContentUnavailableView("Not available", image: "blue_badge"))
             }
             
-            HStack(spacing: 16) {
+            HStack(spacing: 5) {
+                badgeView(title: "Genius", count: "3/3")
                 badgeView(title: "Genius", count: "3/3")
                 badgeView(title: "Genius", count: "3/3")
                 badgeView(title: "Genius", count: "3/3")
@@ -221,32 +248,9 @@ private extension DashboardView {
             Text("\(count) perfect scores")
                 .font(.caption)
                 .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
-    }
-}
-
-private extension DashboardView {
-    var dynamicGreeting: (String, String) {
-        let hour = Calendar.current.component(.hour, from: Date())
-        switch hour {
-        case 5..<12: return ("Good morning", "Start the day with a bang! ☀️")
-        case 12..<17: return ("Good afternoon", "You’re closer than you think 💪")
-        default: return ("Good evening", "Wrap it up, it’s time to rest 🌙")
-        }
-    }
-    
-    var userName: String {
-        userData.name ?? "-"
-    }
-    
-    var userInitials: String {
-        userName
-            .split(separator: " ")
-            .prefix(2)
-            .compactMap { $0.first }
-            .map(String.init)
-            .joined()
     }
 }
 
