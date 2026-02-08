@@ -2,7 +2,14 @@
 - Learning Progress App
 
 
-## App Design Guide
+## Setup Instruction
+
+
+## App Architecture
+- MVVM (Model View View-Model)
+
+
+## Figma Design Guide
 - Design Guide [Figma](https://www.figma.com/design/kGNoaeVy0jw09PNnfLOJ0J/Mobile-engineer-task?node-id=224-228&t=foTxzATogDE5HRWw-0)
 
 
@@ -15,8 +22,6 @@
 - main
 
 
-## App Architecture
-- MVVM (Model View View-Model)
+## Packages
+- GoogleSignIn: Allows users to sign-in using their Google account.
 
-
-## Setup Instruction
