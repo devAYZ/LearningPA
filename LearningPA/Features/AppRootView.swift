@@ -20,7 +20,9 @@ struct AppRootView: View {
             case .signin:
                 SigninView(route: $route)
             case .dashbaord:
-                EmptyView()
+                NavigationStack {
+                    EmptyView()
+                }
             }
         }
         .onAppear {

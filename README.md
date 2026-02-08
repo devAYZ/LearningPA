@@ -16,6 +16,7 @@
 
 
 ## App Architecture
+- MVVM (Model View View-Model)
 
 
 ## Setup Instruction

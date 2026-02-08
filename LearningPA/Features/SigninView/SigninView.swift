@@ -7,6 +7,7 @@
 
 import SwiftUI
 import GoogleSignIn
+import GoogleSignInSwift
 
 struct SigninView: View {
     
@@ -15,12 +16,31 @@ struct SigninView: View {
     @Binding var route: AppRoutes
     
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack {
+            Image(.blueBadge)
+                .aspectRatio(contentMode: .fill)
+                .opacity(0.1)
+            VStack(spacing: 10) {
+                Text("Welcome")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundColor(.purpleMain)
+                Text("Sign in to Start Learning")
+                    .font(.title2)
+                    .fontWeight(.regular)
+                    .multilineTextAlignment(.center)
+                // Google sign-in button
+                GoogleSignInButton(style: .wide, action: handleGoogleLogin)
+                    .frame(width: 120)
+                    .padding(.top, 25)
+            }
+            .padding()
+        }
     }
 }
 
 extension SigninView {
-    func handleSignInButton() {
+    func handleGoogleLogin() {
         guard let presentingVC = (UIApplication.shared.connectedScenes.first as? UIWindowScene)?.windows.first?.rootViewController else {return}
         
         GIDSignIn.sharedInstance.signIn(withPresenting: presentingVC) { signInResult, error in
