@@ -17,6 +17,8 @@ struct DashboardView: View {
     private let todayProgress: Double = 0.6
     private let currentStage = 3
     private let totalStages = 11
+    @State private var showAchievement = false
+    @State private var selectedBadge: BadgeItem?
     
     // MARK: Body
     var body: some View {
@@ -124,7 +126,7 @@ private extension DashboardView {
         .padding(.vertical, 6)
         .background(Color.purpleMain.opacity(0.15))
         .clipShape(Capsule())
-        .navigateTo(to: ContentUnavailableView("Not available", image: "blue_badge"))
+        .navigateTo(to: ComingSoonView(pageTitle: "Streak Tracking"))
     }
 }
 
@@ -199,7 +201,7 @@ private extension DashboardView {
                     .fontWeight(.medium)
                     .foregroundColor(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .navigateTo(to: ContentUnavailableView("Not available", image: "blue_badge"))
+                    .navigateTo(to: ComingSoonView(pageTitle: "Active Learning Path"))
             }
             .padding()
             .background(Color(.secondarySystemBackground))
@@ -210,47 +212,52 @@ private extension DashboardView {
 
 private extension DashboardView {
     var badgesSection: some View {
-        VStack(spacing: 12) {
-            
-            HStack() {
-                Text("Badges")
-                    .font(.headline)
-                
-                Spacer()
-                
-                Text("See All")
-                    .tint(.purpleMain)
-                    .fontWeight(.medium)
-                    .navigateTo(to: ContentUnavailableView("Not available", image: "blue_badge"))
-            }
-            
-            HStack(spacing: 5) {
-                badgeView(title: "Genius", count: "3/3")
-                badgeView(title: "Genius", count: "3/3")
-                badgeView(title: "Genius", count: "3/3")
-                badgeView(title: "Genius", count: "3/3")
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Badges")
+                .font(.headline)
+
+            ScrollView(.horizontal, showsIndicators: true) {
+                LazyHStack(spacing: 8) {
+                    ForEach(BadgeItem.badges(), id: \.id) { badge in
+                        Button {
+                            selectedBadge = badge
+                            showAchievement = true
+                        } label: {
+                            badgeView(title: badge.level, rate: badge.rate, image: badge.image)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.horizontal, 2)
+                .sheet(isPresented: $showAchievement) {
+                    AchievementSheetView(badge: $selectedBadge)
+                        .presentationDetents([.medium, .large])
+                }
             }
         }
     }
     
-    func badgeView(title: String, count: String) -> some View {
-        VStack(spacing: 8) {
-            Image(systemName: "seal.fill")
+    func badgeView(title: String, rate: String, image: String) -> some View {
+        VStack(spacing: 10) {
+            Image(image)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 44, height: 44)
+                .frame(width: 60, height: 60)
                 .foregroundColor(.blue)
-            
+
             Text(title)
                 .font(.subheadline)
                 .fontWeight(.medium)
-            
-            Text("\(count) perfect scores")
+                .lineLimit(1)
+
+            Text(rate)
                 .font(.caption)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
         }
-        .frame(maxWidth: .infinity)
+        .frame(width: 70)
+        .padding(10)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
 
