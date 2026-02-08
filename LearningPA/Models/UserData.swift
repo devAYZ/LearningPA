@@ -9,7 +9,7 @@ import Foundation
 import Observation
 
 @Observable
-class UserData {
+class UserData: Codable {
     var name: String?
     var email: String?
     var imageURL: URL?

@@ -53,16 +53,17 @@ extension SigninView {
                 return
             }
             
-            @Bindable var userData = userData
-            userData = .init(
-                name: result.user.profile?.name,
-                email: result.user.profile?.email,
-                imageURL: result.user.profile?.imageURL(withDimension: 200)
-            )
+            userData.name = result.user.profile?.name
+            userData.email = result.user.profile?.email
+            userData.imageURL = result.user.profile?.imageURL(withDimension: 200)
             
-            // Trigger naviagate to Dashboard
-            route = .dashbaord
+            routeToDashboard()
         }
+    }
+    
+    private func routeToDashboard() {
+        AppStore.shared.cacheObject(object: userData, key: .userData)
+        route = .dashbaord
     }
 }
 

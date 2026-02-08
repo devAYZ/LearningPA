@@ -11,6 +11,7 @@ struct AppRootView: View {
     
     // MARK: Properties
     @State private var route: AppRoutes = .splash
+   @Environment(UserData.self) private var userData
     
     var body: some View {
         Group {
@@ -21,12 +22,20 @@ struct AppRootView: View {
                 SigninView(route: $route)
             case .dashbaord:
                 NavigationStack {
-                    EmptyView()
+                    DashboardView()
                 }
             }
         }
         .onAppear {
-            if AppStore.seenSplashView {
+            if AppStore.shared.seenSplashView {
+                guard let cachedUserDate = AppStore.shared.retrieveCachedObject(object: UserData.self, key: .userData) else {
+                    route = .signin
+                    return
+                }
+                userData.name = cachedUserDate.name
+                userData.email = cachedUserDate.email
+                userData.imageURL = cachedUserDate.imageURL
+                route = .dashbaord
             }
         }
     }

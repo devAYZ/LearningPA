@@ -37,7 +37,7 @@ struct SplashView: View {
             // Last Slide
             if currentIndex == SplashSlide.splashSlides().count - 1 {
                 Button("Start Learning") {
-                    // AppStore.seenSplashView = true
+                    AppStore.shared.seenSplashView = true
                     route = .signin
                 }
                 .frame(maxWidth: .infinity)
