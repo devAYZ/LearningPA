@@ -48,20 +48,21 @@ extension SigninView {
                 return
             }
             
-            // If sign in succeeded, display the app's main content View.
             guard let result = signInResult else {
                 return
             }
             
-            userData.name = result.user.profile?.name
-            userData.email = result.user.profile?.email
-            userData.imageURL = result.user.profile?.imageURL(withDimension: 200)
-            
-            routeToDashboard()
+            DispatchQueue.main.async {
+                self.routeToDashboard(result)
+            }
         }
     }
     
-    private func routeToDashboard() {
+    private func routeToDashboard(_ result: GIDSignInResult) {
+        userData.name = result.user.profile?.name
+        userData.email = result.user.profile?.email
+        userData.imageURL = result.user.profile?.imageURL(withDimension: 200)
+        
         AppStore.shared.cacheObject(object: userData, key: .userData)
         route = .dashbaord
     }
@@ -69,4 +70,9 @@ extension SigninView {
 
 #Preview {
     SigninView(route: .constant(.dashbaord))
+        .environment(UserData(
+            name: "Ayo",
+            email: "ayo@ayo.com",
+            imageURL: .init(string: "")
+        ))
 }

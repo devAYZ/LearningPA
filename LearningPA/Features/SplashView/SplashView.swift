@@ -36,17 +36,19 @@ struct SplashView: View {
             
             // Last Slide
             if currentIndex == SplashSlide.splashSlides().count - 1 {
-                Button("Start Learning") {
+                Button {
                     AppStore.shared.seenSplashView = true
                     route = .signin
+                } label: {
+                    Text("Start Learning")
+                        .frame(maxWidth: .infinity)
+                        .padding(12)
+                        .font(.title3)
+                        .fontWeight(.medium)
+                        .foregroundStyle(Color.white)
+                        .background(Color.purpleMain)
+                        .cornerRadius(12)
                 }
-                .frame(maxWidth: .infinity)
-                .padding(12)
-                .font(.title3)
-                .fontWeight(.medium)
-                .foregroundStyle(Color.white)
-                .background(Color.purpleMain)
-                .cornerRadius(12)
             }
         }
         .padding()

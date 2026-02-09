@@ -11,6 +11,8 @@ struct DashboardView: View {
     
     // MARK: Environment
     @Environment(UserData.self) private var userData
+    var dashboardVM: DashboardViewModel = .init()
+    @State var continueLesson = false
     
     // MARK: Mock Data
     private let streakDays = 3
@@ -137,35 +139,44 @@ private extension DashboardView {
             Text("For today")
                 .font(.headline)
             
-            HStack(spacing: 12) {
-                Circle()
-                    .fill(Color.purpleMain.opacity(0.15))
-                    .frame(width: 44, height: 44)
-                    .overlay(
-                        Image(systemName: "swift")
-                            .foregroundColor(.purpleMain)
-                    )
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Build a login screen in React")
-                        .fontWeight(.medium)
+            Button {
+                continueLesson = true
+            } label: {
+                HStack(spacing: 12) {
+                    Circle()
+                        .fill(Color.purpleMain.opacity(0.15))
+                        .frame(width: 44, height: 44)
+                        .overlay(
+                            Image(systemName: "swift")
+                                .foregroundColor(.purpleMain)
+                        )
                     
-                    Text("Component lifecycle")
-                        .font(.subheadline)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Build a login screen in React")
+                            .fontWeight(.medium)
+                        
+                        Text("Component lifecycle")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        
+                        ProgressView(value: todayProgress)
+                            .tint(.purpleMain)
+                    }
+                    
+                    Spacer()
+                    
+                    Image(systemName: "chevron.right")
                         .foregroundColor(.secondary)
-                    
-                    ProgressView(value: todayProgress)
-                        .tint(.purpleMain)
                 }
-                
-                Spacer()
-                
-                Image(systemName: "chevron.right")
-                    .foregroundColor(.secondary)
+                .padding()
+                .background(Color(.secondarySystemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 16))
             }
-            .padding()
-            .background(Color(.secondarySystemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .alert("Continue Lesson?", isPresented: $continueLesson) {
+                Button("OK") {}
+                Button("Cancel", role: .cancel) {}
+            }
+            .buttonStyle(.plain)
         }
     }
 }
@@ -201,7 +212,7 @@ private extension DashboardView {
                     .fontWeight(.medium)
                     .foregroundColor(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .navigateTo(to: ComingSoonView(pageTitle: "Active Learning Path"))
+                    .navigateTo(to: LearningPathView())
             }
             .padding()
             .background(Color(.secondarySystemBackground))
@@ -218,7 +229,7 @@ private extension DashboardView {
 
             ScrollView(.horizontal, showsIndicators: true) {
                 LazyHStack(spacing: 8) {
-                    ForEach(BadgeItem.badges(), id: \.id) { badge in
+                    ForEach(dashboardVM.badges, id: \.id) { badge in
                         Button {
                             selectedBadge = badge
                             showAchievement = true
@@ -263,7 +274,7 @@ private extension DashboardView {
 
 #Preview {
     NavigationStack {
-        DashboardView()
+        DashboardView(dashboardVM: .init())
             .environment(UserData(
                 name: "Ayo",
                 email: "ayo@ayo.com",
