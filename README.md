@@ -59,3 +59,14 @@ LearningPA follows a MVVM (Model–View–ViewModel) architecture aligned with S
 ## Packages
 - GoogleSignIn: Enables authentication using Google accounts.
 
+## Demo Video
+- Google Drive [Link](https://drive.google.com/file/d/1kSdlS6sW4ALkGb_C6oGZ9xxy5ZWlq9NH/view?usp=share_link)
+
+
+## Views
+- Splash
+- Login
+- Dashboard
+- Acheivement
+- Learning
+- Coming Soon
