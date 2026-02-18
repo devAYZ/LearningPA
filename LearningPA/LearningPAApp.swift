@@ -16,6 +16,7 @@ struct LearningPAApp: App {
         WindowGroup {
             AppRootView()
                 .environment(userData)
+                //.preferredColorScheme(.dark)
         }
     }
 }

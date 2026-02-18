@@ -11,7 +11,7 @@ struct AppRootView: View {
     
     // MARK: Properties
     @State private var route: AppRoutes = .splash
-   @Environment(UserData.self) private var userData
+    @Environment(UserData.self) private var userData
     
     var body: some View {
         Group {
@@ -27,16 +27,21 @@ struct AppRootView: View {
             }
         }
         .onAppear {
-            if AppStore.shared.seenSplashView {
-                guard let cachedUserDate = AppStore.shared.retrieveCachedObject(object: UserData.self, key: .userData) else {
-                    route = .signin
-                    return
-                }
-                userData.name = cachedUserDate.name
-                userData.email = cachedUserDate.email
-                userData.imageURL = cachedUserDate.imageURL
-                route = .dashbaord
+            let cachedUserDate = AppStore.shared.retrieveCachedObject(object: UserData.self, key: .userData)
+            route = RouteDecider.nextRoute(seenSplash: AppStore.shared.seenSplashView, cachedUser: cachedUserDate)
+            if let cached = cachedUserDate {
+                userData.name = cached.name
+                userData.email = cached.email
+                userData.imageURL = cached.imageURL
             }
+        }
+    }
+    
+    enum RouteDecider {
+        static func nextRoute(seenSplash: Bool, cachedUser: UserData?) -> AppRoutes {
+            guard seenSplash else { return .splash }
+            if cachedUser != nil { return .dashbaord }
+            return .signin
         }
     }
 }

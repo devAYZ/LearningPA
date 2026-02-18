@@ -7,12 +7,21 @@
 
 import SwiftUI
 
+protocol DateProviding {
+    func now() -> Date
+}
+
+struct SystemDateProvider: DateProviding {
+    func now() -> Date { Date() }
+}
+
 struct DashboardView: View {
     
     // MARK: Environment
     @Environment(UserData.self) private var userData
     var dashboardVM: DashboardViewModel = .init()
     @State var continueLesson = false
+    var dateProvider: DateProviding = SystemDateProvider()
     
     // MARK: Mock Data
     private let streakDays = 3
@@ -45,13 +54,17 @@ struct DashboardView: View {
         .background(Color(.systemBackground))
     }
     
-    var dynamicGreeting: (String, String) {
-        let hour = Calendar.current.component(.hour, from: Date())
+    static func dynamicGreeting(for date: Date) -> (String, String) {
+        let hour = Calendar.current.component(.hour, from: date)
         switch hour {
         case 5..<12: return ("Good morning", "Start the day with a bang! ☀️")
         case 12..<17: return ("Good afternoon", "You’re closer than you think 💪")
         default: return ("Good evening", "Wrap it up, it’s time to rest 🌙")
         }
+    }
+
+    var dynamicGreeting: (String, String) {
+        Self.dynamicGreeting(for: dateProvider.now())
     }
     
     var userName: String {
@@ -274,7 +287,7 @@ private extension DashboardView {
 
 #Preview {
     NavigationStack {
-        DashboardView(dashboardVM: .init())
+        DashboardView(dashboardVM: .init(), dateProvider: SystemDateProvider())
             .environment(UserData(
                 name: "Ayo",
                 email: "ayo@ayo.com",
